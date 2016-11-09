@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Artificial_bee_colony
+namespace ABC
 {
     class Program
     {
