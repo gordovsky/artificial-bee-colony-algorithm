@@ -10,6 +10,9 @@ namespace ABC
     {
         static void Main(string[] args)
         {
+            Swarm.Instance.Test();
+
+            Console.ReadLine();
         }
     }
 }
