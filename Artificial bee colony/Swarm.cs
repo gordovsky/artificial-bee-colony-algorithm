@@ -9,7 +9,11 @@ namespace ABC
     public class Swarm
     {
         private static readonly Swarm instance = new Swarm();
-        private Swarm() { }
+        private Swarm()
+        {
+            Agents = new List<Agent>();
+            Rnd = new Random(); 
+        }
         public static Swarm Instance
         {
             get
@@ -17,22 +21,43 @@ namespace ABC
                 return instance;
             }
         }
-        public void Run(double C1, double C2, double W, int swarmSize)
+        public void Run(double c1, double c2, double inert, int swarmSize)
         {
             // initialization
-            for (int i = 1; i< swarmSize; i++)
+            for (int i = 0; i< swarmSize; i++)
             {
-
+                Swarm.Instance.Agents.Add(new Agent(c1, c2, inert));
+                if (Swarm.Instance.BestPosition == null)
+                {
+                    Swarm.Instance.BestPosition = Agents[i].Position;
+                    Swarm.Instance.BestFitness = Agents[i].GetFitness();
+                }
             }
-            //double C1 { get; set; } // pbp memory factor 0.5
-            //double C2 { get; set; } // swarm factor 0.5
-            //double W { get; set; } // inertial weight 0.5
-        }
-        public void Test()
-        {
-            Console.WriteLine("singletone works");
+            // searching
+            for (int i = 0; i< 40; i++) 
+            {
+                for(int k = 0; k < Swarm.Instance.Agents.Count(); k++ )
+                {
+                    Agents[k].RecalculateSpeed();
+                    Agents[k].Move();
+
+                    Console.WriteLine("Agent's fitness: " + Agents[k].GetFitness());
+
+                    if (Agents[k].GetFitness() > Swarm.Instance.BestFitness)
+                    {
+                        Agents[k].BestFitness = Agents[k].GetFitness();
+                        Agents[k].BestPostition = Agents[k].Position;
+                        Swarm.Instance.BestFitness = Agents[k].GetFitness();
+                        Swarm.Instance.BestPosition = Agents[k].Position;
+
+                        //Console.WriteLine(Swarm.Instance.BestFitness);
+                    }
+                }
+            }
         }
         public Point BestPosition { get; set; }
-        public Agent[] Bees; 
+        public double BestFitness { get; set; }
+        public List<Agent> Agents { get; set; }
+        public Random Rnd { get; }
     }
 }

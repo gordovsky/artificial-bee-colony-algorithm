@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ABC.cs" />
+    <Compile Include="Swarm.cs" />
     <Compile Include="Agent.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Program.cs" />

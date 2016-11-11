@@ -8,19 +8,19 @@ namespace ABC
 {
     public class Point
     {
-        int X { get; set; }
-        int Y { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
         public Point(int x, int y)
         {
             X = x;
             Y = y;
         }
-        public double Distance(Point point)
-        {
-            var x = X - point.X;
-            var y = Y - point.Y;
-            return x * x + y * y;
-        }
+        //public double DistanceTo(Point point)
+        //{
+        //    var x = X - point.X;
+        //    var y = Y - point.Y;
+        //    return x * x + y * y;
+        //}
         
     }
 
