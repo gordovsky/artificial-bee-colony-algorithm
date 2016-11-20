@@ -11,9 +11,17 @@ artificial bee colony algorithm
 
 -http://www.scholarpedia.org/article/Artificial_bee_colony_algorithm
 
+-http://natcomp.liacs.nl/SWI/papers/artificial.bee.colony.algorithm/a.comparative.study.of.abc.algorithm.pdf
+
+-http://www.e-swarm.org/upload/pdf/LiaAydStu13.pdf
+
+Use example:
+-https://www.hindawi.com/journals/tswj/2014/189164/
+
+
 plot (x^2 + y^2)-0.1*|1-x|-0.1*|1-y|
 
-parameter sets: 
+parameter sets(old): 
   
   C1   // pbp memory factor 0.5	0.1	0.3
 

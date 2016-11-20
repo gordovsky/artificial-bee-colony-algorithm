@@ -11,6 +11,7 @@ namespace UI
 {
     public partial class Form1 : Form
     {
+
         public Form1()
         {
             InitializeComponent();
@@ -37,13 +38,13 @@ namespace UI
             Swarm.Instance.Run();
             AddDataToGraph(zedGraph, Swarm.Instance.Agents.Where(a => a.Role == Agent.RoleTypes.Scout).Select(p => p.Position).ToList(), "Scout");
             AddDataToGraph(zedGraph, Swarm.Instance.Agents.Where(a => a.Role == Agent.RoleTypes.Employed).Select(p => p.Position).ToList(), "Employed");
-            AddDataToGraph(zedGraph, Swarm.Instance.Agents.Where(a => a.Role == Agent.RoleTypes.Onlooker).Select(p => p.Position).ToList(), "Onlooker");
+            //AddDataToGraph(zedGraph, Swarm.Instance.Agents.Where(a => a.Role == Agent.RoleTypes.Onlooker).Select(p => p.Position).ToList(), "Onlooker");
 
             zedGraph.AxisChange();
             
             zedGraph.Invalidate();
         }
-        public void AddDataToGraph(ZedGraphControl zedGraph, List<ABC.Point> points, string label)
+        private void AddDataToGraph(ZedGraphControl zedGraph, List<ABC.Point> points, string label)
         {
             GraphPane myPane = zedGraph.GraphPane;
 
@@ -54,7 +55,7 @@ namespace UI
             // force redraw
             zedGraph.Invalidate();
         }
-        public void InitializeGraph(int xmin, int xmax, int ymin, int ymax)
+        private void InitializeGraph(int xmin, int xmax, int ymin, int ymax)
         {
             GraphPane pane = zedGraph.GraphPane;
             pane.CurveList.Clear();
@@ -90,24 +91,20 @@ namespace UI
             zedGraph.Refresh();
         }
 
-        //private void Form1_Load(object sender, EventArgs e)
-        //{
+        private void button1_Click(object sender, EventArgs e)
+        {
+            timer.Enabled = true;
+        }
 
-        //}
+        private void button2_Click(object sender, EventArgs e)
+        {
+            timer.Enabled = false;
+        }
 
-        //private void label2_Click(object sender, EventArgs e)
-        //{
-
-        //}
-
-        //private void label3_Click(object sender, EventArgs e)
-        //{
-
-        //}
-
-        //private void label1_Click(object sender, EventArgs e)
-        //{
-
-        //}
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedItem.ToString() == "RosenbrocsSaddle") Swarm.Instance.Function = FitnessFunctions.RosenbrocsSaddle;
+            if (comboBox1.SelectedItem.ToString() == "DeJongs") Swarm.Instance.Function = FitnessFunctions.DeJongs;
+        }
     }
 }
