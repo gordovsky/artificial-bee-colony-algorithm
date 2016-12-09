@@ -8,20 +8,17 @@ namespace ABC
 {
     public class Point
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public Point(int x, int y)
+        public double[] Coords;
+        public double Fitness;
+        public Point(int dim)
         {
-            X = x;
-            Y = y;
+            double min = -5.12;
+            double max = 5.12; 
+            Coords = new double[dim];
+            for (int i = 0; i< Coords.Length; i++)
+            {
+                Coords[i] = Swarm.Instance.Rnd.NextDouble() * (max - min) + min;
+            }
         }
-        //public double DistanceTo(Point point)
-        //{
-        //    var x = X - point.X;
-        //    var y = Y - point.Y;
-        //    return x * x + y * y;
-        //}
-        
     }
-
 }

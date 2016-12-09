@@ -18,6 +18,7 @@ artificial bee colony algorithm
 Use example:
 -https://www.hindawi.com/journals/tswj/2014/189164/
 
+-https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4886087/
 
 plot (x^2 + y^2)-0.1*|1-x|-0.1*|1-y|
 

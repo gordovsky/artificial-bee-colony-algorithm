@@ -15,13 +15,13 @@ namespace UI
         public Form1()
         {
             InitializeComponent();
-            Swarm.Instance.Initialize(10, 10, 5, 2, 3, 10, 100000, zedGraph);
-            
-            int xmin = -100;
-            int xmax = 100;
 
-            int ymin = -100;
-            int ymax = 100;
+            
+            int xmin = -10;
+            int xmax = 10;
+
+            int ymin = -10;
+            int ymax = 10;
             
             InitializeGraph(xmin, xmax, ymin, ymax);
         }
@@ -29,7 +29,8 @@ namespace UI
         {
             label1.Text = "Iterations: " + Swarm.Instance.CurrentIteration;
             label2.Text = "Fittnes: " + Swarm.Instance.Fitness;
-            label3.Text = "Position: " + Swarm.Instance.Position.X + "," + Swarm.Instance.Position.Y;
+            
+            //label3.Text = "Position: " + Swarm.Instance.Position.X + "," + Swarm.Instance.Position.Y;
 
             foreach (var curve in zedGraph.GraphPane.CurveList)
             {
@@ -38,7 +39,7 @@ namespace UI
             Swarm.Instance.Run();
             AddDataToGraph(zedGraph, Swarm.Instance.Agents.Where(a => a.Role == Agent.RoleTypes.Scout).Select(p => p.Position).ToList(), "Scout");
             AddDataToGraph(zedGraph, Swarm.Instance.Agents.Where(a => a.Role == Agent.RoleTypes.Employed).Select(p => p.Position).ToList(), "Employed");
-            //AddDataToGraph(zedGraph, Swarm.Instance.Agents.Where(a => a.Role == Agent.RoleTypes.Onlooker).Select(p => p.Position).ToList(), "Onlooker");
+            AddDataToGraph(zedGraph, Swarm.Instance.Agents.Where(a => a.Role == Agent.RoleTypes.Onlooker).Select(p => p.Position).ToList(), "Onlooker");
 
             zedGraph.AxisChange();
             
@@ -47,10 +48,12 @@ namespace UI
         private void AddDataToGraph(ZedGraphControl zedGraph, List<ABC.Point> points, string label)
         {
             GraphPane myPane = zedGraph.GraphPane;
-
-            foreach (var p in points)
+            if (points.Count > 1 && points[0].Coords.Length == 2)
             {
-                ((IPointListEdit)myPane.CurveList[label].Points).Add(p.X, p.Y);
+                foreach (var p in points)
+                {
+                    ((IPointListEdit)myPane.CurveList[label].Points).Add(p.Coords[0], p.Coords[1]);
+                }
             }
             // force redraw
             zedGraph.Invalidate();
@@ -93,7 +96,20 @@ namespace UI
 
         private void button1_Click(object sender, EventArgs e)
         {
-            timer.Enabled = true;
+            //timer.Enabled = true;
+
+            if (checkBox1.Checked == true && Swarm.Instance.Dimension == 2)
+            {
+                timer.Enabled = true;
+            }
+            else
+            {
+                int i = 0;
+                while (i < Swarm.Instance.Iterations && Math.Abs(Swarm.Instance.AverageFitness - Swarm.Instance.Fitness) >= 0.01)
+                {
+                    Swarm.Instance.Run();
+                }
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -103,8 +119,69 @@ namespace UI
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedItem.ToString() == "RosenbrocsSaddle") Swarm.Instance.Function = FitnessFunctions.RosenbrocsSaddle;
-            if (comboBox1.SelectedItem.ToString() == "DeJongs") Swarm.Instance.Function = FitnessFunctions.DeJongs;
+            //if (comboBox1.SelectedItem.ToString() == "RosenbrocsSaddle") Swarm.Instance.Function = FitnessFunctions.RosenbrocsSaddle;
+            //if (comboBox1.SelectedItem.ToString() == "DeJongs") Swarm.Instance.Function = FitnessFunctions.DeJongs;
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if ((int)dimensionComboBox.SelectedItem == 2)
+                checkBox1.Enabled = true;
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            int dim = 0;
+            dim = (int)dimensionComboBox.SelectedItem;
+            FitnessFunction func = FitnessFunctions.RosenbrocsSaddle;
+
+            switch (comboBox1.SelectedItem.ToString())
+            {
+                case "RosenbrocsSaddle":
+                    func = FitnessFunctions.RosenbrocsSaddle;
+                    break;
+                case "DeJongs":
+                    func = FitnessFunctions.DeJongs;
+                    break;
+            }
+            comboBox1.Enabled = false;
+            dimensionComboBox.Enabled = false;
+            button1.Enabled = true;
+            button2.Enabled = true;
+            Swarm.Instance.Initialize(func, dim);
+            
+
+            sizeLabel.Text = "Swarm size: " + Swarm.Instance.Size;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click_1(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
