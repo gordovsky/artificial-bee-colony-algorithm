@@ -7,9 +7,10 @@ using ZedGraph;
 namespace ABC
 {
     public delegate double FitnessFunction(Point point);
-    public class Swarm
+    class Swarm
     {
-        private static readonly Swarm instance = new Swarm();
+        private static Swarm instance;
+        private static object syncRoot = new object();
         private Swarm()
         {
             Agents = new List<Agent>();
@@ -18,17 +19,24 @@ namespace ABC
             ElitePatches = new List<Point>();
             Trail = new Dictionary<Point, double>();
         }
-        public static Swarm Instance
+        public static Swarm Instance()
         {
-            get
+            if (instance == null)
             {
-                return instance;
+                lock (syncRoot)
+                {
+                    if (instance == null)
+                    {
+                        instance = new Swarm();
+                    }
+                }
             }
+            return instance;
         }
         
         public void Initialize(FitnessFunction func, int dim = 2, int iterations = 100000, 
                         int scoutsCount = 10, int bestAgentsCount = 5, int eliteAgentsCount = 2,
-                        int bestPatchesCount = 2, int elitePatchesCount = 3)
+                        int bestPatchesCount = 3, int elitePatchesCount = 2)
         {
             //PatchSize = patchSize;
             Size = scoutsCount + bestAgentsCount * bestPatchesCount + eliteAgentsCount * elitePatchesCount;
@@ -47,13 +55,11 @@ namespace ABC
             for (int i = 0; i < bestAgentsCount * bestPatchesCount; i++) { Agents.Add(new Agent(Agent.RoleTypes.Employed)); }
             for (int i = 0; i < eliteAgentsCount * elitePatchesCount; i++) { Agents.Add(new Agent(Agent.RoleTypes.Onlooker)); }
 
-            var topScout = Agents.Where(a => a.Role == Agent.RoleTypes.Scout)
-                            .OrderBy(a => a.Fitness)
-                            .Reverse().First();
-
-            Fitness = topScout.Fitness;
+            var topAgent = Agents.OrderBy(a => a.Fitness).Reverse().First();
+            Position = topAgent.Position;
+            Fitness = topAgent.Fitness;
             AverageFitness = Agents.Sum(a => a.Fitness)/Size;
-            Position = topScout.Position;
+            
 
             Console.WriteLine("Fitness: " + Fitness + "Iteration" + CurrentIteration);
         }
@@ -74,17 +80,28 @@ namespace ABC
                             .Select(s => s.Key);
 
 
+            var BestPatchesList = Trail
+                            .OrderBy(a => a.Value)
+                            .Reverse()
+                            .Take(BestPatchesCount);
+
 
             int c1 = 0;
             int c2 = 0;
             foreach(var patch in BestPatches)
             {
-                Agents.Where(x => x.Role == Agent.RoleTypes.Employed).Skip(c1* BestPatchesCount).Take(BestAgentsCount).ToList().ForEach(a => a.Search(patch));
+                Agents.Where(x => x.Role == Agent.RoleTypes.Employed)
+                    .Skip(c1* BestPatchesCount)
+                    .Take(BestAgentsCount).ToList()
+                    .ForEach(a => a.Search(patch));
                 c1++;
             }
             foreach (var patch in ElitePatches)
             {
-                Agents.Where(x => x.Role == Agent.RoleTypes.Onlooker).Skip(c2* ElitePatchesCount).Take(EliteAgentsCount).ToList().ForEach(a => a.Search(patch));
+                Agents.Where(x => x.Role == Agent.RoleTypes.Onlooker)
+                    .Skip(c2* ElitePatchesCount)
+                    .Take(EliteAgentsCount).ToList()
+                    .ForEach(a => a.Search(patch));
                 c2++;
             }
 

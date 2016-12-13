@@ -141,8 +141,14 @@ namespace UI
 
         private void button3_Click(object sender, EventArgs e)
         {
-            int dim = 0;
-            dim = (int)dimensionComboBox.SelectedItem;
+            int scoutsCount = int.Parse(textBox1.Text);
+            int employees = int.Parse(textBox2.Text);
+            int onlookers = int.Parse(textBox3.Text);
+            int bestPatches = int.Parse(textBox4.Text);
+            int elitePatches = int.Parse(textBox5.Text);
+            int dim = (int)dimensionComboBox.SelectedItem;
+
+            int iterations = 100000;
             FitnessFunction func = FitnessFunctions.RosenbrocsSaddle;
 
             switch (comboBox1.SelectedItem.ToString())
@@ -158,7 +164,9 @@ namespace UI
             dimensionComboBox.Enabled = false;
             button1.Enabled = true;
             button2.Enabled = true;
-            Swarm.Instance.Initialize(func, dim);
+
+
+            Swarm.Instance.Initialize(func, dim, iterations, scoutsCount, employees, onlookers, bestPatches, elitePatches);
             
 
             sizeLabel.Text = "Swarm size: " + Swarm.Instance.Size;
@@ -180,6 +188,31 @@ namespace UI
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox5_TextChanged(object sender, EventArgs e)
         {
 
         }

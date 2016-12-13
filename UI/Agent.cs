@@ -25,9 +25,10 @@ namespace ABC
             Role = role;
             if (role == RoleTypes.Scout)
             {
-                Swarm.Instance.Trail.Add(Position, GetFitness());
-                Fitness = GetFitness();
+                if (!Swarm.Instance.Trail.ContainsKey(Position))
+                    Swarm.Instance.Trail.Add(Position, GetFitness());
             }
+            Fitness = GetFitness();
         }
 
         public double GetFitness()
@@ -37,6 +38,8 @@ namespace ABC
             {
                 Swarm.Instance.Fitness = f;
                 Swarm.Instance.Position = Position;
+                if (!Swarm.Instance.Trail.ContainsKey(Position))
+                    Swarm.Instance.Trail.Add(Position, GetFitness());
                 Console.WriteLine("New fitness :" + Swarm.Instance.Fitness + "Iteration:" + Swarm.Instance.CurrentIteration);
             }
             return f;
@@ -62,8 +65,10 @@ namespace ABC
                 {
                     var r = new Random();
                     Position.Coords[i] = Swarm.Instance.Rnd.NextDouble() * (max - min) + min;
-                } while (!s.Any(z => Math.Abs(z - Position.Coords[i]) < 1.41*0.5));
+                } while (!s.Any(z => Math.Abs(z - Position.Coords[i]) <= Math.Sqrt(Swarm.Instance.Dimension)*0.5));
             }
+            if (!Swarm.Instance.Trail.ContainsKey(Position))
+                Swarm.Instance.Trail.Add(Position, GetFitness());
             Fitness = GetFitness();
         }
     }
