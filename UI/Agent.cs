@@ -21,36 +21,37 @@ namespace ABC
 
         public Agent(RoleTypes role)
         {
-            Position = new Point(Swarm.Instance.Dimension);
+            Position = new Point(Swarm.GetInstance().Dimension);
             Role = role;
             if (role == RoleTypes.Scout)
             {
-                if (!Swarm.Instance.Trail.ContainsKey(Position))
-                    Swarm.Instance.Trail.Add(Position, GetFitness());
+                if (!Swarm.GetInstance().Trail.ContainsKey(Position))
+                    Swarm.GetInstance().Trail.Add(Position, GetFitness());
             }
             Fitness = GetFitness();
         }
 
         public double GetFitness()
         {
-            var f = Swarm.Instance.FitFunction(Position);
-            if (f > Swarm.Instance.Fitness)
+            var f = Swarm.GetInstance().FitFunction(Position);
+            if (f > Swarm.GetInstance().Fitness)
             {
-                Swarm.Instance.Fitness = f;
-                Swarm.Instance.Position = Position;
-                if (!Swarm.Instance.Trail.ContainsKey(Position))
-                    Swarm.Instance.Trail.Add(Position, GetFitness());
-                Console.WriteLine("New fitness :" + Swarm.Instance.Fitness + "Iteration:" + Swarm.Instance.CurrentIteration);
+                Swarm.GetInstance().Fitness = f;
+                Swarm.GetInstance().Position = Position;
+                if (!Swarm.GetInstance().Trail.ContainsKey(Position))
+                    Swarm.GetInstance().Trail.Add(Position, GetFitness());
+                Console.WriteLine("New fitness :" + Swarm.GetInstance().Fitness + "Iteration:" + Swarm.GetInstance().CurrentIteration);
             }
             return f;
         }
 
-        public void Search(Point anotherPosition)
+        public void Search(Point position)
         {
-            double patchSize = 1;
-            for (int i = 0; i < Swarm.Instance.Dimension; i++)
+            for (int i = 0; i < Swarm.GetInstance().Dimension; i++)
             {
-                Position.Coords[i] = anotherPosition.Coords[i] + Swarm.Instance.Rnd.NextDouble() * patchSize - patchSize/2;
+                double min = -(Swarm.GetInstance().PatchSize/2);
+                double max = Swarm.GetInstance().PatchSize / 2;
+                Position.Coords[i] = position.Coords[i] + Swarm.GetInstance().Rnd.NextDouble() * (max - min) + min;// position.Coords[i] + r.NextDouble() * Swarm.GetInstance().PatchSize - Swarm.GetInstance().PatchSize/2;
             }
             Fitness = GetFitness();
         }
@@ -58,17 +59,19 @@ namespace ABC
         {
             double min = -5.12;
             double max = 5.12;
-            for (int i = 0; i < Swarm.Instance.Dimension; i++)
+            for (int i = 0; i < Swarm.GetInstance().Dimension; i++)
             {
-                var s = Swarm.Instance.Trail.Select(x => x.Key.Coords[i]).ToList();
+                //var r = new Random();
+                Position.Coords[i] = Swarm.GetInstance().Rnd.NextDouble() * (max - min) + min;
+                var s = Swarm.GetInstance().Trail.Select(x => x.Key.Coords[i]).ToList();
                 do
                 {
                     var r = new Random();
-                    Position.Coords[i] = Swarm.Instance.Rnd.NextDouble() * (max - min) + min;
-                } while (!s.Any(z => Math.Abs(z - Position.Coords[i]) <= Math.Sqrt(Swarm.Instance.Dimension)*0.5));
+                    Position.Coords[i] = Swarm.GetInstance().Rnd.NextDouble() * (max - min) + min;
+                } while (!s.Any(z => Math.Abs(z - Position.Coords[i]) <= Math.Sqrt(Swarm.GetInstance().Dimension) * Swarm.GetInstance().PatchSize / 2));
             }
-            if (!Swarm.Instance.Trail.ContainsKey(Position))
-                Swarm.Instance.Trail.Add(Position, GetFitness());
+            if (!Swarm.GetInstance().Trail.ContainsKey(Position))
+                Swarm.GetInstance().Trail.Add(Position, GetFitness());
             Fitness = GetFitness();
         }
     }

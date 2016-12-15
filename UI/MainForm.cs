@@ -16,7 +16,7 @@ namespace UI
         {
             InitializeComponent();
 
-            
+
             int xmin = -10;
             int xmax = 10;
 
@@ -27,8 +27,8 @@ namespace UI
         }
         private void timer_Tick(object sender, EventArgs e)
         {
-            label1.Text = "Iterations: " + Swarm.Instance.CurrentIteration;
-            label2.Text = "Fittnes: " + Swarm.Instance.Fitness;
+            label1.Text = "Iterations: " + Swarm.GetInstance().CurrentIteration;
+            label2.Text = "Fittnes: " + Swarm.GetInstance().Fitness;
             
             //label3.Text = "Position: " + Swarm.Instance.Position.X + "," + Swarm.Instance.Position.Y;
 
@@ -36,10 +36,10 @@ namespace UI
             {
                 curve.Clear();
             }
-            Swarm.Instance.Run();
-            AddDataToGraph(zedGraph, Swarm.Instance.Agents.Where(a => a.Role == Agent.RoleTypes.Scout).Select(p => p.Position).ToList(), "Scout");
-            AddDataToGraph(zedGraph, Swarm.Instance.Agents.Where(a => a.Role == Agent.RoleTypes.Employed).Select(p => p.Position).ToList(), "Employed");
-            AddDataToGraph(zedGraph, Swarm.Instance.Agents.Where(a => a.Role == Agent.RoleTypes.Onlooker).Select(p => p.Position).ToList(), "Onlooker");
+            Swarm.GetInstance().Run();
+            AddDataToGraph(zedGraph, Swarm.GetInstance().Agents.Where(a => a.Role == Agent.RoleTypes.Scout).Select(p => p.Position).ToList(), "Scout");
+            AddDataToGraph(zedGraph, Swarm.GetInstance().Agents.Where(a => a.Role == Agent.RoleTypes.Employed).Select(p => p.Position).ToList(), "Employed");
+            AddDataToGraph(zedGraph, Swarm.GetInstance().Agents.Where(a => a.Role == Agent.RoleTypes.Onlooker).Select(p => p.Position).ToList(), "Onlooker");
 
             zedGraph.AxisChange();
             
@@ -98,16 +98,16 @@ namespace UI
         {
             //timer.Enabled = true;
 
-            if (checkBox1.Checked == true && Swarm.Instance.Dimension == 2)
+            if (checkBox1.Checked == true && Swarm.GetInstance().Dimension == 2)
             {
                 timer.Enabled = true;
             }
             else
             {
                 int i = 0;
-                while (i < Swarm.Instance.Iterations && Math.Abs(Swarm.Instance.AverageFitness - Swarm.Instance.Fitness) >= 0.01)
+                while (i < Swarm.GetInstance().Iterations && Math.Abs(Swarm.GetInstance().AverageFitness - Swarm.GetInstance().Fitness) >= 0.01)
                 {
-                    Swarm.Instance.Run();
+                    Swarm.GetInstance().Run();
                 }
             }
         }
@@ -165,11 +165,17 @@ namespace UI
             button1.Enabled = true;
             button2.Enabled = true;
 
+            textBox1.Enabled = false;
+            textBox2.Enabled = false;
+            textBox3.Enabled = false;
+            textBox4.Enabled = false;
+            textBox5.Enabled = false;
 
-            Swarm.Instance.Initialize(func, dim, iterations, scoutsCount, employees, onlookers, bestPatches, elitePatches);
+
+            Swarm.GetInstance().Initialize(func, dim, iterations, scoutsCount, employees, onlookers, bestPatches, elitePatches);
             
 
-            sizeLabel.Text = "Swarm size: " + Swarm.Instance.Size;
+            sizeLabel.Text = "Swarm size: " + Swarm.GetInstance().Size;
         }
 
         private void Form1_Load(object sender, EventArgs e)

@@ -19,7 +19,7 @@ namespace ABC
             ElitePatches = new List<Point>();
             Trail = new Dictionary<Point, double>();
         }
-        public static Swarm Instance()
+        public static Swarm GetInstance()
         {
             if (instance == null)
             {
@@ -36,9 +36,9 @@ namespace ABC
         
         public void Initialize(FitnessFunction func, int dim = 2, int iterations = 100000, 
                         int scoutsCount = 10, int bestAgentsCount = 5, int eliteAgentsCount = 2,
-                        int bestPatchesCount = 3, int elitePatchesCount = 2)
+                        int bestPatchesCount = 3, int elitePatchesCount = 2, int patchSize = 1)
         {
-            //PatchSize = patchSize;
+            PatchSize = patchSize;
             Size = scoutsCount + bestAgentsCount * bestPatchesCount + eliteAgentsCount * elitePatchesCount;
             Iterations = iterations;
             BestAgentsCount = bestAgentsCount;
@@ -72,6 +72,7 @@ namespace ABC
                             .Reverse()
                             .Take(BestPatchesCount)
                             .Select(s => s.Key);
+
             var ElitePatches = Trail
                             .OrderBy(a => a.Value)
                             .Reverse()
@@ -86,22 +87,35 @@ namespace ABC
                             .Take(BestPatchesCount);
 
 
+            var emp = Agents.Where(x => x.Role == Agent.RoleTypes.Employed).ToList();
+            var lookers = Agents.Where(x => x.Role == Agent.RoleTypes.Onlooker).ToList();
+
+
+
             int c1 = 0;
             int c2 = 0;
-            foreach(var patch in BestPatches)
+            foreach(var p in BestPatches)
             {
-                Agents.Where(x => x.Role == Agent.RoleTypes.Employed)
-                    .Skip(c1* BestPatchesCount)
-                    .Take(BestAgentsCount).ToList()
-                    .ForEach(a => a.Search(patch));
+                var ag = Agents.Where(x => x.Role == Agent.RoleTypes.Employed)
+                    .Skip(c1 * BestAgentsCount)
+                    .Take(BestAgentsCount); //.ToList()
+                    //.ForEach(a => a.Search(p));
+                foreach (var a in ag)
+                {
+                    a.Search(p);
+                }
                 c1++;
             }
-            foreach (var patch in ElitePatches)
+            foreach (var p in ElitePatches)
             {
-                Agents.Where(x => x.Role == Agent.RoleTypes.Onlooker)
-                    .Skip(c2* ElitePatchesCount)
-                    .Take(EliteAgentsCount).ToList()
-                    .ForEach(a => a.Search(patch));
+                var ag = Agents.Where(x => x.Role == Agent.RoleTypes.Onlooker)
+                    .Skip(c2 * EliteAgentsCount)
+                    .Take(EliteAgentsCount); //.ToList()
+                    //.ForEach(a => a.Search(p));
+                foreach (var a in ag)
+                {
+                    a.Search(p);
+                }
                 c2++;
             }
 
@@ -118,7 +132,7 @@ namespace ABC
         public double Fitness { get; set; }
         public double AverageFitness { get; set; }
         public int Size { get; set; }
-        //public int PatchSize { get; set; }
+        public double PatchSize { get; set; }
         public List<Point> BestPatches { get; set; }
         public int BestPatchesCount { get; set; }
         public List<Point> ElitePatches { get; set; }

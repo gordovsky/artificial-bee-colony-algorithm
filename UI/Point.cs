@@ -17,7 +17,7 @@ namespace ABC
             Coords = new double[dim];
             for (int i = 0; i< Coords.Length; i++)
             {
-                Coords[i] = Swarm.Instance.Rnd.NextDouble() * (max - min) + min;
+                Coords[i] = Swarm.GetInstance().Rnd.NextDouble() * (max - min) + min;
             }
         }
     }
