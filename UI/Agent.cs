@@ -23,52 +23,52 @@ namespace ABC
         {
             Position = new Point(Swarm.GetInstance().Dimension);
             Role = role;
-            if (role == RoleTypes.Scout)
-            {
-                if (!Swarm.GetInstance().Trail.ContainsKey(Position))
-                    Swarm.GetInstance().Trail.Add(Position, GetFitness());
-            }
             Fitness = GetFitness();
+            if (!Swarm.GetInstance().Trail.ContainsKey(Position))
+                Swarm.GetInstance().Trail.Add(Position, Fitness);
+            
         }
 
         public double GetFitness()
         {
-            var f = Swarm.GetInstance().FitFunction(Position);
-            if (f > Swarm.GetInstance().Fitness)
+            double currentFit = Swarm.GetInstance().FitFunction(Position);
+            var swf = Swarm.GetInstance().Fitness;
+            var BestPatchesList = Swarm.GetInstance().Trail.OrderBy(p => p.Value).Take(3);
+            if (currentFit < Swarm.GetInstance().Fitness)
             {
-                Swarm.GetInstance().Fitness = f;
+                Swarm.GetInstance().Fitness = Swarm.GetInstance().FitFunction(Position);
                 Swarm.GetInstance().Position = Position;
                 if (!Swarm.GetInstance().Trail.ContainsKey(Position))
-                    Swarm.GetInstance().Trail.Add(Position, GetFitness());
-                Console.WriteLine("New fitness :" + Swarm.GetInstance().Fitness + "Iteration:" + Swarm.GetInstance().CurrentIteration);
+                    Swarm.GetInstance().Trail.Add(Position, currentFit);
+                Console.WriteLine("New fitness :" + Swarm.GetInstance().Fitness + "   Iteration:" + Swarm.GetInstance().CurrentIteration);
             }
-            return f;
+            return currentFit;
         }
 
         public void Search(Point position)
         {
-            for (int i = 0; i < Swarm.GetInstance().Dimension; i++)
-            {
-                double min = -(Swarm.GetInstance().PatchSize/2);
-                double max = Swarm.GetInstance().PatchSize / 2;
-                Position.Coords[i] = position.Coords[i] + Swarm.GetInstance().Rnd.NextDouble() * (max - min) + min;// position.Coords[i] + r.NextDouble() * Swarm.GetInstance().PatchSize - Swarm.GetInstance().PatchSize/2;
-            }
+            var randomIndex = Swarm.GetInstance().Rnd.Next(0, Swarm.GetInstance().Dimension);
+
+            double min = position.Coords[randomIndex] - (Swarm.GetInstance().PatchSize / 2);
+            double max = position.Coords[randomIndex] + Swarm.GetInstance().PatchSize / 2;
+
+            Position.Coords[randomIndex] = Swarm.GetInstance().Rnd.NextDouble() * (max - min) + min;
             Fitness = GetFitness();
         }
         public void GlobalSearch()
         {
             double min = -5.12;
             double max = 5.12;
+            var gap = Math.Sqrt(Swarm.GetInstance().Dimension * Math.Pow((Swarm.GetInstance().PatchSize / 2), 2));
             for (int i = 0; i < Swarm.GetInstance().Dimension; i++)
             {
-                //var r = new Random();
                 Position.Coords[i] = Swarm.GetInstance().Rnd.NextDouble() * (max - min) + min;
                 var s = Swarm.GetInstance().Trail.Select(x => x.Key.Coords[i]).ToList();
                 do
                 {
                     var r = new Random();
                     Position.Coords[i] = Swarm.GetInstance().Rnd.NextDouble() * (max - min) + min;
-                } while (!s.Any(z => Math.Abs(z - Position.Coords[i]) <= Math.Sqrt(Swarm.GetInstance().Dimension) * Swarm.GetInstance().PatchSize / 2));
+                } while (!s.Any(z => Math.Abs(z - Position.Coords[i]) <= gap));
             }
             if (!Swarm.GetInstance().Trail.ContainsKey(Position))
                 Swarm.GetInstance().Trail.Add(Position, GetFitness());

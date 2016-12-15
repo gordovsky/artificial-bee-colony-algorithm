@@ -9,7 +9,7 @@ namespace ABC
     public class Point
     {
         public double[] Coords;
-        public double Fitness;
+        //public double Fitness;
         public Point(int dim)
         {
             double min = -5.12;

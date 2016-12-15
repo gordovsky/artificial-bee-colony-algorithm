@@ -96,19 +96,17 @@ namespace UI
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //timer.Enabled = true;
-
             if (checkBox1.Checked == true && Swarm.GetInstance().Dimension == 2)
             {
                 timer.Enabled = true;
             }
             else
             {
-                int i = 0;
-                while (i < Swarm.GetInstance().Iterations && Math.Abs(Swarm.GetInstance().AverageFitness - Swarm.GetInstance().Fitness) >= 0.01)
+                while (Swarm.GetInstance().CurrentIteration < Swarm.GetInstance().Iterations || Math.Abs(Swarm.GetInstance().AverageFitness - Swarm.GetInstance().Fitness) <= 0.01)
                 {
                     Swarm.GetInstance().Run();
                 }
+                Console.WriteLine("Finish...");
             }
         }
 
@@ -119,14 +117,16 @@ namespace UI
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //if (comboBox1.SelectedItem.ToString() == "RosenbrocsSaddle") Swarm.Instance.Function = FitnessFunctions.RosenbrocsSaddle;
-            //if (comboBox1.SelectedItem.ToString() == "DeJongs") Swarm.Instance.Function = FitnessFunctions.DeJongs;
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             if ((int)dimensionComboBox.SelectedItem == 2)
                 checkBox1.Enabled = true;
+            else
+            {
+                checkBox1.Enabled = false;
+            }
         }
 
         private void label3_Click(object sender, EventArgs e)
@@ -164,6 +164,8 @@ namespace UI
             dimensionComboBox.Enabled = false;
             button1.Enabled = true;
             button2.Enabled = true;
+            
+            initializeButton.Enabled = false;
 
             textBox1.Enabled = false;
             textBox2.Enabled = false;
