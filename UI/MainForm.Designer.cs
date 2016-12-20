@@ -54,6 +54,8 @@ namespace UI
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.textBox5 = new System.Windows.Forms.TextBox();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // zedGraph
@@ -79,7 +81,7 @@ namespace UI
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 355);
+            this.label1.Location = new System.Drawing.Point(16, 320);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(56, 13);
             this.label1.TabIndex = 2;
@@ -89,7 +91,7 @@ namespace UI
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 328);
+            this.label2.Location = new System.Drawing.Point(16, 296);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(44, 13);
             this.label2.TabIndex = 3;
@@ -98,7 +100,7 @@ namespace UI
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 302);
+            this.label3.Location = new System.Drawing.Point(16, 346);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(50, 13);
             this.label3.TabIndex = 4;
@@ -108,7 +110,7 @@ namespace UI
             // button1
             // 
             this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(19, 151);
+            this.button1.Location = new System.Drawing.Point(19, 193);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 5;
@@ -119,7 +121,7 @@ namespace UI
             // button2
             // 
             this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(101, 151);
+            this.button2.Location = new System.Drawing.Point(101, 193);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 6;
@@ -204,9 +206,9 @@ namespace UI
             // 
             this.textBox1.Location = new System.Drawing.Point(275, 17);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Text = "10";
             this.textBox1.Size = new System.Drawing.Size(31, 20);
             this.textBox1.TabIndex = 13;
+            this.textBox1.Text = "10";
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label4
@@ -231,9 +233,9 @@ namespace UI
             // 
             this.textBox2.Location = new System.Drawing.Point(275, 43);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Text = "5";
             this.textBox2.Size = new System.Drawing.Size(31, 20);
             this.textBox2.TabIndex = 15;
+            this.textBox2.Text = "5";
             this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // label6
@@ -249,9 +251,9 @@ namespace UI
             // 
             this.textBox3.Location = new System.Drawing.Point(275, 67);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Text = "2";
             this.textBox3.Size = new System.Drawing.Size(31, 20);
             this.textBox3.TabIndex = 17;
+            this.textBox3.Text = "2";
             this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // label7
@@ -267,9 +269,9 @@ namespace UI
             // 
             this.textBox4.Location = new System.Drawing.Point(275, 91);
             this.textBox4.Name = "textBox4";
-            this.textBox4.Text = "3";
             this.textBox4.Size = new System.Drawing.Size(31, 20);
             this.textBox4.TabIndex = 19;
+            this.textBox4.Text = "3";
             this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
             // label8
@@ -285,16 +287,36 @@ namespace UI
             // 
             this.textBox5.Location = new System.Drawing.Point(275, 117);
             this.textBox5.Name = "textBox5";
-            this.textBox5.Text = "2";
             this.textBox5.Size = new System.Drawing.Size(31, 20);
             this.textBox5.TabIndex = 21;
+            this.textBox5.Text = "2";
             this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
+            // 
+            // textBox6
+            // 
+            this.textBox6.Location = new System.Drawing.Point(275, 143);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(31, 20);
+            this.textBox6.TabIndex = 23;
+            this.textBox6.Text = "1";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(172, 146);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(55, 13);
+            this.label9.TabIndex = 24;
+            this.label9.Text = "PatchSize";
+            this.label9.Click += new System.EventHandler(this.label9_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 461);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.textBox6);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.textBox5);
             this.Controls.Add(this.label7);
@@ -352,6 +374,8 @@ namespace UI
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.Label label9;
     }
 }
 

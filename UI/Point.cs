@@ -8,8 +8,7 @@ namespace ABC
 {
     public class Point
     {
-        public double[] Coords;
-        //public double Fitness;
+        public double[] Coords;  
         public Point(int dim)
         {
             double min = -5.12;
@@ -19,6 +18,10 @@ namespace ABC
             {
                 Coords[i] = Swarm.GetInstance().Rnd.NextDouble() * (max - min) + min;
             }
+        }
+        public Point(double[] coords)
+        {
+            Coords = coords;
         }
     }
 }

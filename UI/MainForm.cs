@@ -16,6 +16,7 @@ namespace UI
         {
             InitializeComponent();
 
+            
 
             int xmin = -10;
             int xmax = 10;
@@ -102,8 +103,13 @@ namespace UI
             }
             else
             {
-                while (Swarm.GetInstance().CurrentIteration < Swarm.GetInstance().Iterations || Math.Abs(Swarm.GetInstance().AverageFitness - Swarm.GetInstance().Fitness) <= 0.01)
+                while (Swarm.GetInstance().CurrentIteration < Swarm.GetInstance().Iterations)
                 {
+                    if (Math.Abs(Swarm.GetInstance().AverageFitness - Swarm.GetInstance().Fitness) <= 0.01)
+                    {
+                        Console.WriteLine("Limit condition stop");
+                        break;
+                    }
                     Swarm.GetInstance().Run();
                 }
                 Console.WriteLine("Finish...");
@@ -147,6 +153,7 @@ namespace UI
             int bestPatches = int.Parse(textBox4.Text);
             int elitePatches = int.Parse(textBox5.Text);
             int dim = (int)dimensionComboBox.SelectedItem;
+            int patchSize = int.Parse(textBox6.Text);
 
             int iterations = 100000;
             FitnessFunction func = FitnessFunctions.RosenbrocsSaddle;
@@ -172,9 +179,9 @@ namespace UI
             textBox3.Enabled = false;
             textBox4.Enabled = false;
             textBox5.Enabled = false;
+            textBox6.Enabled = false;
 
-
-            Swarm.GetInstance().Initialize(func, dim, iterations, scoutsCount, employees, onlookers, bestPatches, elitePatches);
+            Swarm.GetInstance().Initialize(func, dim, iterations, scoutsCount, employees, onlookers, bestPatches, elitePatches, patchSize);
             
 
             sizeLabel.Text = "Swarm size: " + Swarm.GetInstance().Size;
@@ -221,6 +228,11 @@ namespace UI
         }
 
         private void textBox5_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label9_Click(object sender, EventArgs e)
         {
 
         }

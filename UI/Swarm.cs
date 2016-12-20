@@ -6,7 +6,7 @@ using ZedGraph;
 
 namespace ABC
 {
-    public delegate double FitnessFunction(Point point);
+    public delegate double FitnessFunction(double[] coords);
     class Swarm
     {
         private static Swarm instance;
@@ -17,7 +17,7 @@ namespace ABC
             Rnd = new Random();
             BestPatches = new List<Point>();
             ElitePatches = new List<Point>();
-            Trail = new Dictionary<Point, double>();
+            Trail = new Dictionary<double[], double>();
         }
         public static Swarm GetInstance()
         {
@@ -49,11 +49,13 @@ namespace ABC
             Dimension = dim;
             CurrentIteration = 0;
             Fitness = Double.MaxValue;
+            Position = new Point(dim);
 
             // first agents initialization
             for (int i = 0; i < scoutsCount; i++) { Agents.Add(new Agent(Agent.RoleTypes.Scout)); }
             for (int i = 0; i < bestAgentsCount * bestPatchesCount; i++) { Agents.Add(new Agent(Agent.RoleTypes.Employed)); }
             for (int i = 0; i < eliteAgentsCount * elitePatchesCount; i++) { Agents.Add(new Agent(Agent.RoleTypes.Onlooker)); }
+            
             
             AverageFitness = Agents.Sum(a => a.Fitness)/Size;
         }
@@ -72,21 +74,7 @@ namespace ABC
                             .Skip(BestPatchesCount)
                             .Take(ElitePatchesCount)
                             .Select(s => s.Key);
-
-
-            // to delete
-            //var BestPatchesList = Trail.OrderBy(p => p.Value).Take(1);
-            //foreach (var p in BestPatchesList)
-            //{
-            //    Console.Write(p.Key.Coords[0] + "," + p.Key.Coords[1]  + " : " + p.Value);
-            //    Console.WriteLine();
-            //}
-            //Console.WriteLine("---");
-            // to delete
-            //var emp = Agents.Where(x => x.Role == Agent.RoleTypes.Employed).ToList();
-            //var lookers = Agents.Where(x => x.Role == Agent.RoleTypes.Onlooker).ToList();
-
-
+            
 
             int c1 = 0;
             int c2 = 0;
@@ -113,13 +101,19 @@ namespace ABC
                 c2++;
             }
 
+            // Scouts search step
             Agents.Where(x => x.Role == Agent.RoleTypes.Scout).ToList().ForEach(a => a.GlobalSearch());
             AverageFitness = Agents.Sum(a => a.Fitness) / Size;
             CurrentIteration += 1;
         }
 
         public int Dimension;
-        public Dictionary<Point, double> Trail { get; set; }
+        public Dictionary<double[], double> Trail
+        {
+            get;
+            set;
+        }
+        
         public FitnessFunction FitFunction { get; set; }
         public int Iterations { get; set; }
         public int CurrentIteration { get; set; }
