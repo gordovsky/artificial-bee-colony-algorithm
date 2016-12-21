@@ -31,8 +31,8 @@ namespace ABC
             double currentFit = Swarm.GetInstance().FitFunction(coords);
             if (currentFit < Swarm.GetInstance().Fitness)
             {
-                var cf = Swarm.GetInstance().FitFunction(coords);
-                Swarm.GetInstance().Fitness = cf;
+                Console.WriteLine("New fitness :" + Swarm.GetInstance().Fitness + "   Iteration:" + Swarm.GetInstance().CurrentIteration);
+                Swarm.GetInstance().Fitness = currentFit;
                 Swarm.GetInstance().Position.Coords = coords;
                 if (!Swarm.GetInstance().Trail.ContainsKey(Position.Coords))
                 {
@@ -41,13 +41,10 @@ namespace ABC
                     {
                         newPoint[i] = Position.Coords[i];
                     }
-                    Swarm.GetInstance().Trail.Add(newPoint, cf);
-
-                    //Swarm.GetInstance().DogNail.Add(new KeyValuePair<double, double>(newPoint[0], newPoint[1]));
+                    Swarm.GetInstance().Trail.Add(newPoint, currentFit);
                 }
-                //Swarm.GetInstance().Trail.Add(Position.Coords, currentFit);
-                Console.WriteLine("New fitness :" + Swarm.GetInstance().Fitness + "   Iteration:" + Swarm.GetInstance().CurrentIteration);
             }
+            Swarm.GetInstance().FittnessCallsCounter++;
             return currentFit;
         }
 

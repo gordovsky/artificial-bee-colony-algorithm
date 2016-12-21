@@ -36,7 +36,7 @@ namespace ABC
         
         public void Initialize(FitnessFunction func, int dim = 2, int iterations = 100000, 
                         int scoutsCount = 10, int bestAgentsCount = 5, int eliteAgentsCount = 2,
-                        int bestPatchesCount = 3, int elitePatchesCount = 2, int patchSize = 1)
+                        int bestPatchesCount = 3, int elitePatchesCount = 2, double patchSize = 1)
         {
             PatchSize = patchSize;
             Size = scoutsCount + bestAgentsCount * bestPatchesCount + eliteAgentsCount * elitePatchesCount;
@@ -50,35 +50,38 @@ namespace ABC
             CurrentIteration = 0;
             Fitness = Double.MaxValue;
             Position = new Point(dim);
+            PrevAverageFitness = double.MaxValue;
 
             // first agents initialization
             for (int i = 0; i < scoutsCount; i++) { Agents.Add(new Agent(Agent.RoleTypes.Scout)); }
             for (int i = 0; i < bestAgentsCount * bestPatchesCount; i++) { Agents.Add(new Agent(Agent.RoleTypes.Employed)); }
             for (int i = 0; i < eliteAgentsCount * elitePatchesCount; i++) { Agents.Add(new Agent(Agent.RoleTypes.Onlooker)); }
-            
-            
-            AverageFitness = Agents.Sum(a => a.Fitness)/Size;
+
+
+            AverageFitness = Agents.Where(a => a.Role != Agent.RoleTypes.Scout).Sum(a => a.Fitness) / (Size - BestAgentsCount);
         }
         public void Run()
         {
+            PrevAverageFitness = AverageFitness;
+            PrevFitness = Fitness;
 
             var BestPatches = Trail
                             .OrderBy(a => a.Value)
                             .Take(BestPatchesCount)
                             .Select(s => s.Key);
 
-            
+
 
             var ElitePatches = Trail
                             .OrderBy(a => a.Value)
                             .Skip(BestPatchesCount)
                             .Take(ElitePatchesCount)
                             .Select(s => s.Key);
-            
+
 
             int c1 = 0;
             int c2 = 0;
-            foreach(var p in BestPatches)
+            foreach (var p in BestPatches)
             {
                 var ag = Agents.Where(x => x.Role == Agent.RoleTypes.Employed)
                     .Skip(c1 * BestAgentsCount)
@@ -93,7 +96,7 @@ namespace ABC
             {
                 var ag = Agents.Where(x => x.Role == Agent.RoleTypes.Onlooker)
                     .Skip(c2 * EliteAgentsCount)
-                    .Take(EliteAgentsCount); 
+                    .Take(EliteAgentsCount);
                 foreach (var a in ag)
                 {
                     a.Search(p);
@@ -102,23 +105,47 @@ namespace ABC
             }
 
             // Scouts search step
-            Agents.Where(x => x.Role == Agent.RoleTypes.Scout).ToList().ForEach(a => a.GlobalSearch());
-            AverageFitness = Agents.Sum(a => a.Fitness) / Size;
-            CurrentIteration += 1;
+            foreach (var scout in Agents.Where(a => a.Role == Agent.RoleTypes.Scout))
+            {
+                scout.GlobalSearch();
+            }
+
+            AverageFitness = Agents.Where(a => a.Role != Agent.RoleTypes.Scout ) .Sum(a => a.Fitness) / (Size - BestAgentsCount);
+            CurrentIteration++;
+            
+            GenerationsCounter = (Math.Abs(PrevAverageFitness - AverageFitness) < 0.0001) ? GenerationsCounter + 1 : 0;
+            
+            PatchChangeCounter = (PrevFitness == Fitness) ? PatchChangeCounter + 1 : 0;
+
+            if (PatchChangeCounter>50)
+            {
+                PatchSize = 0.95 * PatchSize;
+                PatchChangeCounter = 0;
+            }
+        }
+
+        public double EuclidDistance()
+        {
+            double sum = 0;
+            foreach (var coord in Position.Coords)
+            {
+                sum += (coord-1) * (coord - 1);
+            }
+            return Math.Sqrt(sum);
         }
 
         public int Dimension;
-        public Dictionary<double[], double> Trail
-        {
-            get;
-            set;
-        }
-        
+        public Dictionary<double[], double> Trail { get; set; }
         public FitnessFunction FitFunction { get; set; }
         public int Iterations { get; set; }
         public int CurrentIteration { get; set; }
+        public int PatchChangeCounter { get; set; }
+        public int GenerationsCounter { get; set; }
+        public int FittnessCallsCounter { get; set; }
         public Point Position { get; set; }
         public double Fitness { get; set; }
+        public double PrevAverageFitness { get; set; }
+        public double PrevFitness { get; set; }
         public double AverageFitness { get; set; }
         public int Size { get; set; }
         public double PatchSize { get; set; }

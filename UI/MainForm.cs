@@ -103,16 +103,31 @@ namespace UI
             }
             else
             {
-                while (Swarm.GetInstance().CurrentIteration < Swarm.GetInstance().Iterations)
+                while ((Swarm.GetInstance().CurrentIteration < Swarm.GetInstance().Iterations))
                 {
-                    if (Math.Abs(Swarm.GetInstance().AverageFitness - Swarm.GetInstance().Fitness) <= 0.01)
+                    if ((Math.Abs(Swarm.GetInstance().AverageFitness - Swarm.GetInstance().Fitness) > 0.01)
+                        && (Swarm.GetInstance().GenerationsCounter < 5))
                     {
-                        Console.WriteLine("Limit condition stop");
+                        Swarm.GetInstance().Run();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Stop conditions");
                         break;
                     }
-                    Swarm.GetInstance().Run();
                 }
                 Console.WriteLine("Finish...");
+
+                label1.Text = "Iterations: " + Swarm.GetInstance().CurrentIteration;
+                label2.Text = "Fittnes: " + Swarm.GetInstance().Fitness;
+                label3.Text = "Position:";
+                label11.Text = "Distance to average: " + Swarm.GetInstance().AverageFitness;
+                label10.Text = "Euclid distance:" + Swarm.GetInstance().EuclidDistance();
+                label12.Text = "Fitness func calls: " + Swarm.GetInstance().FittnessCallsCounter;
+                for (int i=0; i< Swarm.GetInstance().Dimension; i++)
+                {
+                    label3.Text += Swarm.GetInstance().Position.Coords[i] + "\n";
+                }
             }
         }
 
@@ -153,7 +168,7 @@ namespace UI
             int bestPatches = int.Parse(textBox4.Text);
             int elitePatches = int.Parse(textBox5.Text);
             int dim = (int)dimensionComboBox.SelectedItem;
-            int patchSize = int.Parse(textBox6.Text);
+            double patchSize = double.Parse(textBox6.Text);
 
             int iterations = 100000;
             FitnessFunction func = FitnessFunctions.RosenbrocsSaddle;
@@ -233,6 +248,21 @@ namespace UI
         }
 
         private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label12_Click(object sender, EventArgs e)
         {
 
         }
